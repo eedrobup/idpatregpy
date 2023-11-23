@@ -27,7 +27,7 @@
 <h3 align="center">IDentity PATtern REcoGnition in Python</h3>
 
   <p align="center">
-    A program for identity classification by patterns in images using landmark-points-extracted patch and image processing
+    A program for identity classification by patterns in images using landmark-points-extracted patch and image processing.<br />
     <br />
     <a href="https://github.com/eedrobup/idpatregpy"><strong>Explore the docs »</strong></a>
     <br />
@@ -64,6 +64,7 @@
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
+    <li><a href="#supervisors">Supervisors</a></li>
     <li><a href="#acknowledgments">Acknowledgments</a></li>
   </ol>
 </details>
@@ -73,9 +74,8 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
-
-Here's a blank template to get started: To avoid retyping too much info. Do a search and replace with your text editor for the following: `github_username`, `repo_name`, `twitter_handle`, `linkedin_username`, `email_client`, `email`, `project_title`, `project_description`
+This program is refactored from my master thesis at the University of Manchester in 2023 titled
+#### "Identifying individual Xenopus using image analysis and machine learning."
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -132,7 +132,7 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 - [ ] Landmarkdetector model
     - [ ] base object
 
-See the [open issues](https://github.com/github_username/repo_name/issues) for a full list of proposed features (and known issues).
+See the [open issues](https://github.com/eedrobup/idpatregpy/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -168,7 +168,8 @@ Distributed under the Modified BSD License. See `LICENSE.txt` for more informati
 <!-- CONTACT -->
 ## Contact
 
-Pubordee Aussavavirojekul (eedrobup) - [@pu_aus](https://twitter.com/pu_aus) - pubordee.a@gmail.com - [![LinkedIn][linkedin-shield]][linkedin-url]
+Pubordee Aussavavirojekul (eedrobup) - [@pu_aus](https://twitter.com/pu_aus) - pubordee.a@gmail.com
+[![LinkedIn][linkedin-shield]][linkedin-url]
 
 Project Link: [https://github.com/eedrobup/idpatregpy](https://github.com/eedrobup/idpatregpy)
 
@@ -176,18 +177,23 @@ Project Link: [https://github.com/eedrobup/idpatregpy](https://github.com/eedrob
 
 
 
-<!-- ACKNOWLEDGMENTS -->
+<!-- SUPERVISORS -->
+## Supervisors
+
+* [Professor Tim Cootes](https://personalpages.manchester.ac.uk/staff/timothy.f.cootes/)
+* [Dr Sarah Woolner ](https://research.manchester.ac.uk/en/persons/sarah.woolner)
+
+<!-- ACKNOWLEDGEMENT -->
 ## Acknowledgments
 
-* []()
-* []()
-* []()
+* [Dr Nawseen Tarannum](https://www.linkedin.com/in/nawseen-tarannum-5411a76b)
+* [Matthew Coates](https://www.linkedin.com/in/matthew-coates-5768715b)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/github_username/repo_name.svg?style=for-the-badge
+[contributors-shield]: https://img.shields.io/github/contributors/eedrobup/repo_name.svg?style=for-the-badge
 [contributors-url]: https://github.com/eedrobup/idpatregpy/graphs/contributors
 [forks-shield]: https://img.shields.io/github/forks/eedrobup/idpatregpy.svg?style=for-the-badge
 [forks-url]: https://github.com/eedrobup/idpatregpy/network/members
