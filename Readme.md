@@ -92,9 +92,6 @@ This program is refactored from my master thesis at the University of Manchester
 <!-- GETTING STARTED -->
 ## Getting Started
 
-This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
-
 ### Prerequisites
 
 use `pip install -r requirements.txt` if Normal installation below does not work
@@ -110,7 +107,10 @@ use `pip install -r requirements.txt` if Normal installation below does not work
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+Describe how to
+1. import and encase each image and landmark points into imagepoints(IMPO) object
+2. group IMPO into bulk for either model training or setting up database
+3. how to use DatabaseBulk to recognize pattern of distinct identity from image(s)
 
 _For more examples, please refer to the [Documentation](https://example.com)_
 
@@ -131,6 +131,7 @@ _For more examples, please refer to the [Documentation](https://example.com)_
     - [ ] Database object
 - [ ] Landmarkdetector model
     - [ ] base object
+- [ ] Add usage readme
 
 See the [open issues](https://github.com/eedrobup/idpatregpy/issues) for a full list of proposed features (and known issues).
 
@@ -180,8 +181,8 @@ Project Link: [https://github.com/eedrobup/idpatregpy](https://github.com/eedrob
 <!-- SUPERVISORS -->
 ## Supervisors
 
-* [Professor Tim Cootes](https://personalpages.manchester.ac.uk/staff/timothy.f.cootes/)
-* [Dr Sarah Woolner ](https://research.manchester.ac.uk/en/persons/sarah.woolner)
+* Principal supervisor: [Professor Tim Cootes](https://personalpages.manchester.ac.uk/staff/timothy.f.cootes/)
+* Co-supervisor: [Dr Sarah Woolner ](https://research.manchester.ac.uk/en/persons/sarah.woolner)
 
 <!-- ACKNOWLEDGEMENT -->
 ## Acknowledgments
