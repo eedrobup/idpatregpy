@@ -9,20 +9,22 @@ import numpy as np
 from skimage import io,color,transform
 from skimage.util import crop
 import json
+import pickle
 
 import landmarkdetector
 
 class ImPo:
     """Object for a set of an image and its landmark points"""
-    def __init__(self, image_name:str, image: np.array, points: np.array) -> None:
+    def __init__(self, frog_name:str, image_name:str, image: np.array, points: np.array) -> None:
         """loop reading images and points in main not here"""
         self.name = image_name
+        self.frog = frog_name
         self.X = image
         self.y = points
         self.scale = None
         self.bounding_box = None
     
-    def __rotate(origin, point, angle):
+    def rotate(self, origin, point, angle):
         """
         Rotate a set of points counterclockwise by a given angle around a given origin.
         The angle in degree but need to transform to radian later within function.
@@ -35,7 +37,7 @@ class ImPo:
         qy = oy + np.sin(angle) * (px - ox) + np.cos(angle) * (py - oy)
         return qx, qy
     
-    def __rotate_resize(origin: tuple, point: list, angle: float, width, height):
+    def rotate_resize(self, origin: tuple, point: list, angle: float, width, height):
         """
         Rotate a set of points counterclockwise by a given angle around a given origin.
         The angle in degree but need to transform to radian later within function.
@@ -60,6 +62,9 @@ class ImPo:
     
     def get_points(self):
         return self.y
+    
+    def get_frog(self):
+        return self.frog
     
     def set_boundary(self, vector:np.array) -> None:
         """set focus boundary to fetch a portion of image out"""
@@ -88,21 +93,35 @@ class ImPo:
         """extract resampled patch surrounding by landmarks points to the specified size"""
         pass
     
+    def save_pickle(self,path:str):
+        """save this object instance to a file in provided directory
+        
+        Args:
+            path (str): directory and name to save
+        """
+        with open(path, 'w') as f:
+            pickle.dump(self, f)
+    
     def save_json(self, path: str):
         """save image and its points to provided directory
 
         Args:
-            path (str): directory and name to save
+            path (str): directory without name (use impo name to save)
         """
-        path = path if path[-5:]==".json" else path+".json"
+        if path[-5:]==".json":
+            raise Exception("Please provide only directory not with name")
+        path = path+self.name if path[-1:]=="/" else path+"/"+self.name
         with open(path, 'w') as f:
-            json.dump(self, f)
+            json.dump({'name': self.name,
+                       'frog': self.frog,
+                       'image': self.X.tolist(),
+                       'points': self.y.tolist()}, f)
 
 #TODO: inherit all parent methods with super().method()
 class ManualImPo(ImPo):
     """Child class for an image-points pair where points are human labelled (ground truth)"""
-    def __init__(self, image: np.array, points: np.array) -> None:
-        super().__init__(image, points)
+    def __init__(self, frog_name:str, image: np.array, points: np.array) -> None:
+        super().__init__(frog_name, image, points)
         self.pivot = np.mean(points, axis=0)
         self.theta = np.rad2deg(np.arctan2(points[0][0]-self.pivot[0],points[0][1]-self.pivot[1]))
     
@@ -112,13 +131,13 @@ class ManualImPo(ImPo):
     
     def get_std_points(self):
         """return coordinate of points of standard image"""
-        return self.__rotate_resize(origin=self.pivot, point=self.y, angle=self.theta, width=self.X.shape[1], height=self.X.shape[0])
+        return self.rotate_resize(origin=self.pivot, point=self.y, angle=self.theta, width=self.X.shape[1], height=self.X.shape[0])
     
     def get_std(self):
         """return both image in standard orientation and associated landmark points"""
         return transform.rotate(self.X,self.theta,
                                 center=self.pivot,
-                                resize=True), self.__rotate_resize(origin=self.pivot, point=self.y,angle=self.theta,
+                                resize=True), self.rotate_resize(origin=self.pivot, point=self.y,angle=self.theta,
                                                                    width=self.X.shape[1], height=self.X.shape[0])
 
 #TODO: inherit all parent methods with super().method()
@@ -129,7 +148,8 @@ class GenImPo(ImPo):
         points = model.get_points_from_image()
         super().__init__(image, points)
         self.layer = []
-    def __augment_points(self):
+
+    def augment_points(self):
         """point augmentation to create better sense of whereabout of frog in image"""
         pass
         

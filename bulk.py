@@ -45,10 +45,10 @@ class Bulk:
         else:
             self.bulk_name = bulk_name
         
-        self.__data = self.__load_data(self.bulk_name)
+        self.data = self.load_data(self.bulk_name)
         pass
     
-    def __load_data(self, name:str):
+    def load_data(self, name:str):
         """return pandas DF of data if present otherwise return blank dataframe with standard columns"""
         if not name+".csv" in os.listdir(self.path):
             return pd.DataFrame(columns=std_col)
@@ -56,23 +56,23 @@ class Bulk:
             return pd.read_csv(self.path+"/"+name+".csv")
     
     def add_entity(self, frog_name, impo:imagepoints.ImPo):
-        id = self.__get_new_id()
-        self.__data.loc[id,"utc_time_stamp"] = datetime.datetime.utcnow()
-        self.__data.loc[id,"name"] = frog_name
-        self.__data.loc[id,"image"] = None
-        self.__data.loc[id,"vdes"] = None
-        self.__data.loc[id,"vec"] = None
-        self.__data.loc[id,"im_name"] = impo.get_name()
+        id = self.get_new_id()
+        self.data.loc[id,"utc_time_stamp"] = datetime.datetime.utcnow()
+        self.data.loc[id,"name"] = frog_name
+        self.data.loc[id,"image"] = None
+        self.data.loc[id,"vdes"] = None
+        self.data.loc[id,"vec"] = None
+        self.data.loc[id,"im_name"] = impo.get_name()
         if not self.path+"/"+impo.get_name()+".json" in os.listdir(self.path):
-            impo.save_json(self.path+"/"+impo.get_name()+".json")
+            impo.save_json(self.path)
         pass
     
-    def __get_new_id(self) -> int:
-        return int(self.__data.shape[0])
+    def get_new_id(self) -> int:
+        return int(self.data.shape[0])
     
     def save_data(self) -> None:
         """save bulk data to csv"""
-        self.__data.to_csv(self.path+"/"+self.bulk_name+".csv")
+        self.data.to_csv(self.path+"/"+self.bulk_name+".csv")
 
 #TODO: inherit all parent methods with super().method()
 class TrainingBulk(Bulk):
@@ -89,14 +89,14 @@ class TrainingBulk(Bulk):
         
     def add_entity(self, frog_name, impo:imagepoints.ManualImPo) -> None:
         """add a new entry of training image"""
-        id = self.__get_new_id()
-        self.__data.loc[id,"utc_time_stamp"] = datetime.datetime.utcnow()
-        self.__data.loc[id,"name"] = frog_name
-        self.__data.loc[id,"image"] = impo.get_std_image()
-        self.__data.loc[id,"points"] = impo.get_std_points()
-        self.__data.loc[id,"im_name"] = impo.get_name()
+        id = self.get_new_id()
+        self.data.loc[id,"utc_time_stamp"] = datetime.datetime.utcnow()
+        self.data.loc[id,"name"] = frog_name
+        self.data.loc[id,"image"] = impo.get_std_image()
+        self.data.loc[id,"points"] = impo.get_std_points()
+        self.data.loc[id,"im_name"] = impo.get_name()
         if not self.path+"/"+impo.get_name()+".json" in os.listdir(self.path):
-            impo.save_json(self.path+"/"+impo.get_name()+".json")
+            impo.save_json(self.path)
         self.loaders_done = False
     
     def __generate_target_image(self, im_size:tuple, list_of_points:np.array,blob_width:int = 10)->np.array:
@@ -157,9 +157,9 @@ class TrainingBulk(Bulk):
         #prepare input and output mask from data and create dataloader from it
         if self.loaders_done==False or (self.loaders is None):
             #if data is updated and loader has not yet updated
-            images_in = torch.stack([self.convert_image_to_tensor(p) for p in self.__data["image"]], dim=0)
+            images_in = torch.stack([self.convert_image_to_tensor(p) for p in self.data["image"]], dim=0)
             #FIXME: check how self.input_size is handled
-            target_img = [self.__generate_target_image(self.input_size,pts) for pts in self.__data["points"]]
+            target_img = [self.__generate_target_image(self.input_size,pts) for pts in self.data["points"]]
             target_masks = torch.stack([self.convert_image_to_tensor(p) for p in target_img],dim=0)
             self.__set_dataloader(images_in, target_masks)
             del images_in, target_img, target_masks #clear memory
@@ -255,26 +255,26 @@ class DatabaseBulk(Bulk):
     def __init__(self, bulk_name:str, path:str):
         super().__init__(bulk_name, path)
         self.vec_descriptor="HOG"
-        self.__archived = self.__load_data(self.bulk_name+"_archived")
+        self.__archived = self.load_data(self.bulk_name+"_archived")
         
     def add_entity(self, frog_name, impo:imagepoints.GenImPo):
-        id = self.__get_new_id()
-        self.__data.loc[id,"utc_time_stamp"] = datetime.datetime.utcnow()
-        self.__data.loc[id,"name"] = frog_name
-        self.__data.loc[id,"image"] = None
-        self.__data.loc[id,"vdes"] = self.vec_descriptor
-        self.__data.loc[id,"vec"] = self.__vector_extraction(impo)
-        self.__data.loc[id,"im_name"] = impo.get_name()
+        id = self.get_new_id()
+        self.data.loc[id,"utc_time_stamp"] = datetime.datetime.utcnow()
+        self.data.loc[id,"name"] = frog_name
+        self.data.loc[id,"image"] = None
+        self.data.loc[id,"vdes"] = self.vec_descriptor
+        self.data.loc[id,"vec"] = self.__vector_extraction(impo)
+        self.data.loc[id,"im_name"] = impo.get_name()
         if not self.path+"/"+impo.get_name()+".json" in os.listdir(self.path):
-            impo.save_json(self.path+"/"+impo.get_name()+".json")
+            impo.save_json(self.path)
         pass
     
-    def __load_data(self, name: str):
-        return super().__load_data(name+"_db")
+    def load_data(self, name: str):
+        return super().load_data(name+"_db")
     
     def save_data(self) -> None:
         """save bulk data to csv"""
-        self.__data.to_csv(self.path+"/"+self.bulk_name+"_db.csv")
+        self.data.to_csv(self.path+"/"+self.bulk_name+"_db.csv")
         self.__archived.to_csv(self.path+"/"+self.bulk_name+"_archived_db.csv")
     
     def __softmax(score:dict)->dict:
@@ -286,8 +286,8 @@ class DatabaseBulk(Bulk):
     
     def __get_distances(self, image_vec, dist_func):
         score = {}
-        for id in self.__data["name"].unique():
-            score[id] = np.mean([dist_func(x,image_vec) for x in self.__data[self.__data["name"]==id]["vec"]])
+        for id in self.data["name"].unique():
+            score[id] = np.mean([dist_func(x,image_vec) for x in self.data[self.data["name"]==id]["vec"]])
         return self.__softmax(score)
 
     def __vector_extraction(self, impo: imagepoints.ImPo) -> np.array:
